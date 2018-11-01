@@ -1,0 +1,79 @@
+azs:
+- name: z1
+  cloud_properties: {availability_zone: us-east-2a}
+- name: z2
+  cloud_properties: {availability_zone: us-east-2b}
+- name: z3
+  cloud_properties: {availability_zone: us-east-2c}
+
+vm_types:
+- name: default
+  cloud_properties:
+    instance_type: t2.micro
+    ephemeral_disk: {size: 3000, type: gp2}
+- name: large
+  cloud_properties:
+    instance_type: m4.large
+    ephemeral_disk: {size: 30000, type: gp2}
+- name: concourse-worker
+  cloud_properties:
+    instance_type: m4.large
+    ephemeral_disk: {size: 10000, type: gp2}
+- name: small
+  cloud_properties:
+    instance_type: t2.micro
+    ephemeral_disk: {size: 3000, type: gp2}
+
+disk_types:
+- name: default
+  disk_size: 3000
+  cloud_properties: {type: gp2}
+- name: large
+  disk_size: 50_000
+  cloud_properties: {type: gp2}
+- name: concourse
+  disk_size: 50_000
+  cloud_properties: {type: gp2}
+
+networks:
+- name: default
+  type: manual
+  subnets:
+  - range: 10.4.1.0/24
+    gateway: 10.4.1.1
+    az: z1
+    static: [10.4.1.6-10.4.1.16]
+    dns: [8.8.8.8, 8.8.4.4]
+    cloud_properties: {subnet: subnet-0a5bf38c01378d2d4}
+    reserved: [10.4.1.0-10.4.1.5]
+  - range: 10.4.2.0/24
+    gateway: 10.4.2.1
+    az: z2
+    static: [10.4.2.6-10.4.2.16]
+    dns: [8.8.8.8, 8.8.4.4]
+    cloud_properties: {subnet: subnet-09bb0bc8a887ead30}
+    reserved: [10.4.2.0-10.4.2.5]
+- name: concourse
+  type: manual
+  subnets:
+  - range: 10.4.3.0/24
+    gateway: 10.4.3.1
+    az: z3
+    static: [10.4.3.6-10.4.3.16]
+    dns: [8.8.8.8, 8.8.4.4]
+    cloud_properties: {subnet: subnet-0b94e96ebd11a83f8}
+    reserved: [10.4.3.0-10.4.3.5]
+- name: vip
+  type: vip
+
+compilation:
+  workers: 5
+  reuse_compilation_vms: true
+  az: z1
+  vm_type: large
+  network: default
+
+vm_extensions:
+  - name: web_load_balance
+    cloud_properties:
+      lb_target_groups: [concourse-web-ssl]

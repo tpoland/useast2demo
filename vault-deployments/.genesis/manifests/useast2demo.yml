@@ -1,0 +1,126 @@
+azs:
+- cloud_properties:
+    availability_zone: us-east-2a
+  name: z1
+- cloud_properties:
+    availability_zone: us-east-2a
+  name: z2
+- cloud_properties:
+    availability_zone: us-east-2a
+  name: z3
+compilation:
+  az: z1
+  network: default
+  reuse_compilation_vms: true
+  vm_type: large
+  workers: 5
+disk_types:
+- cloud_properties:
+    type: gp2
+  disk_size: 3000
+  name: default
+- cloud_properties:
+    type: gp2
+  disk_size: 50000
+  name: large
+exodus:
+  dated: 2018-10-29 22:16:42 +0000
+  deployer: tpoland
+  ips:
+  - 10.4.1.6
+  - 10.4.1.7
+  - 10.4.1.8
+  kit_name: vault
+  kit_version: 1.2.1
+  vault_base: secret/useast2demo/vault
+  version: 2.6.12
+instance_groups:
+- azs:
+  - z1
+  - z2
+  - z3
+  instances: 3
+  jobs:
+  - name: vault
+    release: safe
+  name: vault
+  networks:
+  - name: default
+    static_ips:
+    - 10.4.1.6
+    - 10.4.1.7
+    - 10.4.1.8
+  persistent_disk_pool: default
+  properties:
+    safe:
+      peer:
+        tls:
+          ca: REDACTED
+          certificate: REDACTED
+          key: REDACTED
+  stemcell: default
+  vm_type: default
+kit:
+  name: vault
+  version: 1.2.1
+meta:
+  default:
+    azs:
+    - z1
+    - z2
+    - z3
+  vault: secret/useast2demo/vault
+name: useast2demo-vault
+networks:
+- name: default
+  subnets:
+  - azs:
+    - z1
+    - z2
+    - z3
+    cloud_properties:
+      subnet: subnet-0a5bf38c01378d2d4
+    dns:
+    - 8.8.8.8
+    - 8.8.4.4
+    gateway: 10.4.1.1
+    range: 10.4.1.0/24
+    reserved:
+    - 10.4.1.0-10.4.1.5
+    static:
+    - 10.4.1.6-10.4.1.16
+  type: manual
+- name: vip
+  type: vip
+params:
+  env: useast2demo
+  name: useast2demo-vault
+  vault_network: default
+releases:
+- name: safe
+  sha1: 0251b18836750728b89bb95e615992ec84e99978
+  url: https://github.com/cloudfoundry-community/safe-boshrelease/releases/download/v0.1.0/safe-0.1.0.tgz
+  version: 0.1.0
+stemcells:
+- alias: default
+  os: ubuntu-trusty
+  version: latest
+update:
+  canaries: 1
+  canary_watch_time: 30000-120000
+  max_in_flight: 1
+  serial: true
+  update_watch_time: 30000-120000
+vm_types:
+- cloud_properties:
+    ephemeral_disk:
+      size: 3000
+      type: gp2
+    instance_type: t2.micro
+  name: default
+- cloud_properties:
+    ephemeral_disk:
+      size: 30000
+      type: gp2
+    instance_type: m4.large
+  name: large

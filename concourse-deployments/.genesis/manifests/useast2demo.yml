@@ -1,0 +1,328 @@
+azs:
+- cloud_properties:
+    availability_zone: us-east-2a
+  name: z1
+- cloud_properties:
+    availability_zone: us-east-2b
+  name: z2
+- cloud_properties:
+    availability_zone: us-east-2c
+  name: z3
+compilation:
+  az: z1
+  network: default
+  reuse_compilation_vms: true
+  vm_type: large
+  workers: 5
+disk_types:
+- cloud_properties:
+    type: gp2
+  disk_size: 3000
+  name: default
+- cloud_properties:
+    type: gp2
+  disk_size: 50000
+  name: large
+- cloud_properties:
+    type: gp2
+  disk_size: 50000
+  name: concourse
+exodus:
+  dated: 2018-11-01 20:41:05 +0000
+  deployer: tpoland
+  external_url: https://concourse-ux-2099806338.us-east-2.elb.amazonaws.com
+  kit_name: concourse
+  kit_version: 2.3.0
+  password: REDACTED
+  self-signed: true
+  tsa_host: 10.4.3.7
+  tsa_host_public_key: REDACTED
+  tsa_port: 2222
+  tsa_worker_private_key: REDACTED
+  tsa_worker_public_key: REDACTED
+  username: concourse
+  vault_base: secret/useast2demo/concourse
+  version: 2.6.12
+instance_groups:
+- azs:
+  - z3
+  instances: 3
+  jobs:
+  - name: worker
+    properties:
+      baggageclaim:
+        forward_address: 127.0.0.1:7788
+      garden:
+        forward_address: 127.0.0.1:7777
+      http_proxy_url: ""
+      https_proxy_url: ""
+      no_proxy:
+      - localhost
+      - 127.0.0.1
+      tsa:
+        worker_key:
+          private_key: REDACTED
+          public_key: REDACTED
+    release: concourse
+  - name: baggageclaim
+    properties:
+      driver: detect
+    release: concourse
+  - name: garden
+    properties:
+      garden:
+        listen_address: 0.0.0.0:7777
+        listen_network: tcp
+    release: garden-runc
+  name: worker
+  networks:
+  - name: concourse
+  stemcell: default
+  update:
+    max_in_flight: 3
+    serial: true
+  vm_type: concourse-worker
+- azs:
+  - z3
+  instances: 0
+  jobs:
+  - name: haproxy
+    properties:
+      ha_proxy:
+        tcp:
+        - backend_port: 8080
+          backend_servers:
+          - 10.4.3.7
+          name: web_http
+          port: 80
+        - backend_port: 4443
+          backend_servers:
+          - 10.4.3.7
+          name: web_https
+          port: 443
+    release: haproxy
+  name: haproxy
+  networks:
+  - name: concourse
+    static_ips: []
+  stemcell: default
+  vm_type: small
+- azs:
+  - z3
+  instances: 1
+  jobs:
+  - name: tsa
+    properties:
+      authorized_keys:
+      - REDACTED
+      host_key:
+        private_key: REDACTED
+        public_key: REDACTED
+      token_signing_key:
+        private_key: REDACTED
+        public_key: REDACTED
+    release: concourse
+  - name: atc
+    properties:
+      basic_auth_password: REDACTED
+      basic_auth_username: concourse
+      bind_port: 8080
+      external_url: https://concourse-ux-2099806338.us-east-2.elb.amazonaws.com
+      postgresql:
+        database: atc
+        role:
+          name: atc
+          password: REDACTED
+      publicly_viewable: true
+      tls_bind_port: 4443
+      tls_cert: REDACTED
+      tls_key: REDACTED
+      token_signing_key:
+        private_key: REDACTED
+        public_key: REDACTED
+    release: concourse
+  name: web
+  networks:
+  - name: concourse
+    static_ips:
+    - 10.4.3.7
+  stemcell: default
+  vm_extensions:
+  - web_load_balance
+  vm_type: small
+- azs:
+  - z3
+  instances: 1
+  jobs:
+  - name: postgres
+    properties:
+      databases:
+        databases:
+        - name: atc
+        port: 5432
+        roles:
+        - name: atc
+          password: REDACTED
+    release: postgres
+  - name: locker
+    properties:
+      locker:
+        password: REDACTED
+        ssl_cert: REDACTED
+        ssl_key: REDACTED
+        user: locker
+    release: locker
+  name: db
+  networks:
+  - name: concourse
+  persistent_disk_pool: concourse
+  stemcell: default
+  vm_type: small
+kit:
+  features:
+  - full
+  - self-signed-cert
+  name: concourse
+  version: 2.3.0
+meta:
+  default:
+    azs:
+    - z1
+    - z2
+    - z3
+    main_user: concourse
+    no_proxy:
+    - localhost
+    - 127.0.0.1
+  vault: secret/useast2demo/concourse
+name: useast2demo-concourse
+networks:
+- name: default
+  subnets:
+  - az: z1
+    cloud_properties:
+      subnet: subnet-0a5bf38c01378d2d4
+    dns:
+    - 8.8.8.8
+    - 8.8.4.4
+    gateway: 10.4.1.1
+    range: 10.4.1.0/24
+    reserved:
+    - 10.4.1.0-10.4.1.5
+    static:
+    - 10.4.1.6-10.4.1.16
+  - az: z2
+    cloud_properties:
+      subnet: subnet-09bb0bc8a887ead30
+    dns:
+    - 8.8.8.8
+    - 8.8.4.4
+    gateway: 10.4.2.1
+    range: 10.4.2.0/24
+    reserved:
+    - 10.4.2.0-10.4.2.5
+    static:
+    - 10.4.2.6-10.4.2.16
+  type: manual
+- name: concourse
+  subnets:
+  - az: z3
+    cloud_properties:
+      subnet: subnet-0b94e96ebd11a83f8
+    dns:
+    - 8.8.8.8
+    - 8.8.4.4
+    gateway: 10.4.3.1
+    range: 10.4.3.0/24
+    reserved:
+    - 10.4.3.0-10.4.3.5
+    static:
+    - 10.4.3.6-10.4.3.16
+  type: manual
+- name: vip
+  type: vip
+params:
+  availability_zones:
+  - z3
+  concourse_disk_type: concourse
+  concourse_network: concourse
+  concourse_vm_type: small
+  env: useast2demo
+  external_domain: concourse-ux-2099806338.us-east-2.elb.amazonaws.com
+  external_url: https://concourse-ux-2099806338.us-east-2.elb.amazonaws.com
+  name: useast2demo-concourse
+  num_web_nodes: 1
+  stemcell_os: ubuntu-trusty
+  stemcell_version: latest
+  token_signing_key:
+    private_key: REDACTED
+    public_key: REDACTED
+  vault: useast2demo/concourse
+  volume_driver: detect
+  worker_vm_type: concourse-worker
+  workers: 3
+releases:
+- name: concourse
+  sha1: 6be91b70ecc7ce233d2aff5d03ed28c8eab3d132
+  url: https://bosh.io/d/github.com/concourse/concourse?v=3.14.1
+  version: 3.14.1
+- name: garden-runc
+  sha1: be5e6d6a263be1437d99dc5e818deeb8ab2a03a4
+  url: https://bosh.io/d/github.com/cloudfoundry/garden-runc-release?v=1.14.0
+  version: 1.14.0
+- name: slack-notification-resource
+  sha1: a64c65d1f23ea089746e698f29dbe522dd716c1b
+  url: https://bosh.io/d/github.com/cloudfoundry-community/slack-notification-resource-boshrelease?v=9
+  version: 9
+- name: postgres
+  sha1: 3f378bcab294e20316171d4e656636df88763664
+  url: https://bosh.io/d/github.com/cloudfoundry/postgres-release?v=20
+  version: 20
+- name: locker
+  sha1: ccfcc48d63555a3733c3594d9429a5c1875a9dd2
+  url: https://github.com/cloudfoundry-community/locker-boshrelease/releases/download/v0.2.1/locker-0.2.1.tgz
+  version: 0.2.1
+- name: haproxy
+  sha1: 8ebad4c8e57fac2fba9da07536f61efe8141be6f
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/haproxy-boshrelease?v=8.4.2
+  version: 8.4.2
+stemcells:
+- alias: default
+  os: ubuntu-trusty
+  version: latest
+update:
+  canaries: 1
+  canary_watch_time: 1000-60000
+  max_in_flight: 4
+  serial: false
+  update_watch_time: 1000-60000
+vm_extensions:
+- cloud_properties:
+    lb_target_groups:
+    - concourse-web-ssl
+  name: web_load_balance
+vm_types:
+- cloud_properties:
+    ephemeral_disk:
+      size: 3000
+      type: gp2
+    instance_type: t2.micro
+  name: default
+- cloud_properties:
+    ephemeral_disk:
+      size: 30000
+      type: gp2
+    instance_type: m4.large
+  name: large
+- cloud_properties:
+    ephemeral_disk:
+      size: 10000
+      type: gp2
+    instance_type: m4.large
+  name: concourse-worker
+- cloud_properties:
+    ephemeral_disk:
+      size: 3000
+      type: gp2
+    instance_type: t2.micro
+  name: small

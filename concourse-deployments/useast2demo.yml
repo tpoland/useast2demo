@@ -1,0 +1,22 @@
+---
+kit:
+  name:    concourse
+  version: 2.3.0
+  features:
+    - (( replace ))
+    - full
+    - self-signed-cert
+
+params:
+  env:   useast2demo
+  vault: useast2demo/concourse
+  external_domain: concourse-ux-2099806338.us-east-2.elb.amazonaws.com
+  availability_zones:
+    - (( replace ))
+    - z3
+
+instance_groups:
+- name: haproxy
+  instances: 0
+- name: web
+  vm_extensions: [web_load_balance]

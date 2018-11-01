@@ -1,0 +1,8 @@
+---
+kit:
+  name:    vault
+  version: 1.2.1
+
+params:
+  env: useast2demo
+  vault_network: default
