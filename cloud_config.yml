@@ -4,7 +4,7 @@ azs:
 - name: z2
   cloud_properties: {availability_zone: us-east-2b}
 - name: z3
-  cloud_properties: {availability_zone: us-east-2c}
+  cloud_properties: {availability_zone: us-east-2b}
 
 vm_types:
 - name: default
@@ -56,13 +56,13 @@ networks:
 - name: concourse
   type: manual
   subnets:
-  - range: 10.4.3.0/24
-    gateway: 10.4.3.1
+  - range: 10.4.0.0/24
+    gateway: 10.4.0.1
     az: z3
-    static: [10.4.3.6-10.4.3.16]
+    static: [10.4.0.6-10.4.0.16]
     dns: [8.8.8.8, 8.8.4.4]
-    cloud_properties: {subnet: subnet-0b94e96ebd11a83f8}
-    reserved: [10.4.3.0-10.4.3.5]
+    cloud_properties: {subnet: subnet-09351c99bf2858155}
+    reserved: [10.4.0.0-10.4.0.5]
 - name: vip
   type: vip
 
@@ -72,8 +72,3 @@ compilation:
   az: z1
   vm_type: large
   network: default
-
-vm_extensions:
-  - name: web_load_balance
-    cloud_properties:
-      lb_target_groups: [concourse-web-ssl]

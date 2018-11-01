@@ -6,7 +6,7 @@ azs:
     availability_zone: us-east-2b
   name: z2
 - cloud_properties:
-    availability_zone: us-east-2c
+    availability_zone: us-east-2b
   name: z3
 compilation:
   az: z1
@@ -28,14 +28,14 @@ disk_types:
   disk_size: 50000
   name: concourse
 exodus:
-  dated: 2018-11-01 20:41:05 +0000
+  dated: 2018-11-01 22:46:04 +0000
   deployer: tpoland
-  external_url: https://concourse-ux-2099806338.us-east-2.elb.amazonaws.com
+  external_url: https://https://training.starkandwayne.com
   kit_name: concourse
   kit_version: 2.3.0
   password: REDACTED
   self-signed: true
-  tsa_host: 10.4.3.7
+  tsa_host: 10.4.0.7
   tsa_host_public_key: REDACTED
   tsa_port: 2222
   tsa_worker_private_key: REDACTED
@@ -92,12 +92,12 @@ instance_groups:
         tcp:
         - backend_port: 8080
           backend_servers:
-          - 10.4.3.7
+          - 10.4.0.7
           name: web_http
           port: 80
         - backend_port: 4443
           backend_servers:
-          - 10.4.3.7
+          - 10.4.0.7
           name: web_https
           port: 443
     release: haproxy
@@ -127,7 +127,7 @@ instance_groups:
       basic_auth_password: REDACTED
       basic_auth_username: concourse
       bind_port: 8080
-      external_url: https://concourse-ux-2099806338.us-east-2.elb.amazonaws.com
+      external_url: https://https://training.starkandwayne.com
       postgresql:
         database: atc
         role:
@@ -145,10 +145,15 @@ instance_groups:
   networks:
   - name: concourse
     static_ips:
-    - 10.4.3.7
+    - 10.4.0.7
+  - name: vip
+    static_ips:
+    - 18.188.113.134
+  - default:
+    - dns
+    - gateway
+    name: concourse
   stemcell: default
-  vm_extensions:
-  - web_load_balance
   vm_type: small
 - azs:
   - z3
@@ -228,16 +233,16 @@ networks:
   subnets:
   - az: z3
     cloud_properties:
-      subnet: subnet-0b94e96ebd11a83f8
+      subnet: subnet-09351c99bf2858155
     dns:
     - 8.8.8.8
     - 8.8.4.4
-    gateway: 10.4.3.1
-    range: 10.4.3.0/24
+    gateway: 10.4.0.1
+    range: 10.4.0.0/24
     reserved:
-    - 10.4.3.0-10.4.3.5
+    - 10.4.0.0-10.4.0.5
     static:
-    - 10.4.3.6-10.4.3.16
+    - 10.4.0.6-10.4.0.16
   type: manual
 - name: vip
   type: vip
@@ -248,8 +253,8 @@ params:
   concourse_network: concourse
   concourse_vm_type: small
   env: useast2demo
-  external_domain: concourse-ux-2099806338.us-east-2.elb.amazonaws.com
-  external_url: https://concourse-ux-2099806338.us-east-2.elb.amazonaws.com
+  external_domain: https://training.starkandwayne.com
+  external_url: https://https://training.starkandwayne.com
   name: useast2demo-concourse
   num_web_nodes: 1
   stemcell_os: ubuntu-trusty
@@ -296,11 +301,6 @@ update:
   max_in_flight: 4
   serial: false
   update_watch_time: 1000-60000
-vm_extensions:
-- cloud_properties:
-    lb_target_groups:
-    - concourse-web-ssl
-  name: web_load_balance
 vm_types:
 - cloud_properties:
     ephemeral_disk:
