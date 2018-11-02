@@ -6,5 +6,5 @@
 }
 
 awk -F '\t' '{print $1, $4;}' dg_class | while read name pass ; do
-echo fly -t training set-team -n $name -u admin -p $pass
+fly -t training set-team -n $name --non-interactive --basic-auth-username  admin --basic-auth-password $pass 
 done
