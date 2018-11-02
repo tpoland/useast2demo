@@ -1,0 +1,10 @@
+#!/bin/bash
+
+[[ ! -f dg_class ]] && {
+	echo "Do you need to decrypt dg_class file?"
+	exit 1
+}
+
+awk -F '\t' '{print $1, $4;}' dg_class | while read name pass ; do
+echo fly -t training set-team -n $name -u admin -p $pass
+done
