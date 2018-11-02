@@ -27,13 +27,13 @@ params:
   #
   aws_region: us-east-2
   aws_default_sgs:
-    - sg-0bd16423d3a043a36
+    - sg-0c38ce007f319810d
 
   # The following configuration is only necessary for proto-BOSH
   # deployments, since environment BOSHes will derive their networking
   # and VM/AMI configuration from their parent BOSH cloud-config.
   #
-  aws_subnet_id: subnet-0a5bf38c01378d2d4
+  aws_subnet_id: subnet-0147ae3364580f841
   aws_security_groups:
-    - sg-0bd16423d3a043a36
+    - sg-0c38ce007f319810d
 

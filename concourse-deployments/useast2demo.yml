@@ -10,7 +10,7 @@ kit:
 params:
   env:   useast2demo
   vault: useast2demo/concourse
-  external_domain: https://training.starkandwayne.com
+  external_domain: https://dgtraining.starkandwayne.com
   availability_zones:
     - (( replace ))
     - z3
@@ -23,6 +23,6 @@ instance_groups:
   - name: web
     networks:
       - name: vip
-        static_ips: [18.188.113.134]
+        static_ips: [52.14.43.134]
       - name: concourse
         default: [dns, gateway]
