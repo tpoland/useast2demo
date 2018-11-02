@@ -18,6 +18,8 @@ params:
 instance_groups:
   - name: haproxy
     instances: 0
+  - name: worker
+    instances: 5
   - name: web
     networks:
       - name: vip
