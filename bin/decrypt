@@ -1,0 +1,5 @@
+#/bin/bash 
+passphrase=${1:?Do not forgot to enter the passphrase}
+
+echo hello
+gpg --pinentry-mode loopback --symmetric -d --passphrase ${passphrase} -o dg_class dg_class.gpg
