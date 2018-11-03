@@ -1,0 +1,39 @@
+kit:
+  name:    bosh
+  version: 1.2.1
+  features:
+    - aws
+    - proto
+
+params:
+  env:   training
+
+  # These properties definte the host-level networking for a proto-BOSH.
+  # Environmental BOSHes can depend on their parent BOSH cloud-config,
+  # but for proto- environments, we have to specify these.
+  #
+  static_ip:       10.4.1.4
+  subnet_addr:     10.4.1.0/24
+  default_gateway: 10.4.1.1
+  dns:
+    - 8.8.8.8
+    - 4.4.4.4
+
+  # BOSH on AWS needs to know what region to deploy to, and what
+  # default security groups to apply to all VMs by default.
+  #
+  # AWS credentials are stored in the Vault at
+  #   secret/training/bosh/aws
+  #
+  aws_region: us-east-2
+  aws_default_sgs:
+    - sg-097f0228a64f30cdb
+
+  # The following configuration is only necessary for proto-BOSH
+  # deployments, since environment BOSHes will derive their networking
+  # and VM/AMI configuration from their parent BOSH cloud-config.
+  #
+  aws_subnet_id: subnet-02e701da5a791735e
+  aws_security_groups:
+    - sg-097f0228a64f30cdb
+

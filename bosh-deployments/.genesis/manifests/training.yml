@@ -1,0 +1,513 @@
+cloud_provider:
+  cert:
+    ca: REDACTED
+    certificate: REDACTED
+    private_key: REDACTED
+  mbus: https://mbus:REDACTED@10.4.1.4:6868
+  properties:
+    agent:
+      mbus: https://mbus:REDACTED@0.0.0.0:6868
+    aws:
+      access_key_id: REDACTED
+      default_key_name: vcap@training
+      default_security_groups:
+      - sg-097f0228a64f30cdb
+      region: us-east-2
+      secret_access_key: REDACTED
+    blobstore:
+      path: /var/vcap/micro_bosh/data/cache
+      provider: local
+    ntp:
+    - 0.pool.ntp.org
+    - 1.pool.ntp.org
+  ssh_tunnel:
+    host: 10.4.1.4
+    port: 22
+    private_key: REDACTED
+    user: vcap
+  template:
+    name: aws_cpi
+    release: bosh-aws-cpi
+disk_pools:
+- cloud_properties:
+    type: gp2
+  disk_size: 32768
+  name: bosh
+exodus:
+  admin_password: REDACTED
+  admin_username: admin
+  ca_cert: REDACTED
+  dated: 2018-11-02 22:10:56 +0000
+  deployer: tpoland
+  kit_name: bosh
+  kit_version: 1.2.1
+  netop_sshkey: REDACTED
+  sysop_password: REDACTED
+  url: https://10.4.1.4:25555
+  vault_base: secret/training/bosh
+  version: 2.6.12
+instance_groups:
+- azs:
+  - us-east-2a
+  instances: 1
+  jobs:
+  - name: bpm
+    release: bpm
+  - name: nats
+    release: bosh
+  - name: postgres-9.4
+    release: bosh
+  - name: blobstore
+    release: bosh
+  - name: director
+    release: bosh
+  - name: health_monitor
+    release: bosh
+  - name: uaa
+    properties:
+      encryption:
+        active_key_label: uaa1
+        encryption_keys:
+        - label: uaa1
+          passphrase: REDACTED
+      login:
+        saml:
+          activeKeyId: saml1
+          keys:
+            saml1:
+              certificate: REDACTED
+              key: REDACTED
+              passphrase: ""
+      uaa:
+        clients:
+          admin:
+            authorities: bosh.admin
+            authorized-grant-types: client_credentials
+            override: true
+            scope: ""
+            secret: REDACTED
+          bosh_cli:
+            access-token-validity: 120
+            authorities: uaa.none
+            authorized-grant-types: password,refresh_token
+            override: true
+            refresh-token-validity: 86400
+            scope: openid,bosh.admin,bosh.read,bosh.*.admin,bosh.*.read,bosh.teams.*.admin,bosh.teams.*.read
+            secret: ""
+          concourse:
+            access-token-validity: 120
+            authorities: bosh.admin
+            authorized-grant-types: client_credentials
+            override: true
+            refresh-token-validity: 500
+            scope: ""
+            secret: REDACTED
+          credhub_cli:
+            access-token-validity: 60
+            authorities: ""
+            authorized-grant-types: password,refresh_token
+            override: true
+            refresh-token-validity: 1800
+            scope: credhub.read,credhub.write
+            secret: ""
+          director_to_credhub:
+            access-token-validity: 3600
+            authorities: credhub.read,credhub.write
+            authorized-grant-types: client_credentials
+            override: true
+            scope: ""
+            secret: REDACTED
+          hm:
+            authorities: bosh.admin
+            authorized-grant-types: client_credentials
+            override: true
+            scope: ""
+            secret: REDACTED
+          prometheus:
+            authorities: bosh.read
+            authorized-grant-types: client_credentials, refresh_token
+            override: true
+            scope: bosh.read
+            secret: REDACTED
+          uaa_admin:
+            authorities: clients.read,clients.write,clients.secret,uaa.admin,scim.read,scim.write,password.write
+            authorized-grant-types: client_credentials
+            override: true
+            scope: ""
+            secret: REDACTED
+        jwt:
+          policy:
+            active_key_id: jwt1
+            keys:
+              jwt1:
+                signingKey: REDACTED
+          revocable: true
+        login:
+          client_secret: REDACTED
+        port: -1
+        scim:
+          groups:
+            bosh.admin: User has admin access on any Director
+            bosh.read: User has read access on any Director
+            bosh.releases.upload: User can upload new releases
+            bosh.stemcells.upload: User can upload new stemcells
+          users:
+          - groups:
+            - bosh.admin
+            name: admin
+            password: REDACTED
+          - groups:
+            - bosh.admin
+            name: concourse
+            password: REDACTED
+          - groups:
+            - credhub.read
+            - credhub.write
+            name: credhub-cli
+            password: REDACTED
+        sslCertificate: REDACTED
+        sslPrivateKey: REDACTED
+        url: https://10.4.1.4:8443
+        zones:
+          internal:
+            hostnames: []
+      uaadb:
+        address: 127.0.0.1
+        databases:
+        - name: uaa
+          tag: uaa
+        db_scheme: postgresql
+        port: 5432
+        roles:
+        - name: boshdb
+          password: REDACTED
+          tag: admin
+    release: uaa
+  - name: credhub
+    properties:
+      credhub:
+        authentication:
+          uaa:
+            ca_certs:
+            - REDACTED
+            url: https://10.4.1.4:8443
+            verification_key: REDACTED
+        authorization:
+          acls:
+            enabled: false
+        data_storage:
+          database: credhub
+          host: 127.0.0.1
+          password: REDACTED
+          port: 5432
+          require_tls: false
+          type: postgres
+          username: boshdb
+        encryption:
+          keys:
+          - active: true
+            key_properties:
+              encryption_password: REDACTED
+            provider_name: internal
+          providers:
+          - name: internal
+            type: internal
+        tls:
+          certificate: REDACTED
+          private_key: REDACTED
+    release: credhub
+  - name: aws_cpi
+    release: bosh-aws-cpi
+  - name: registry
+    release: bosh
+  - name: user_add
+    properties:
+      persistent_homes: true
+      users:
+      - name: netop
+        public_key: REDACTED
+      - crypted_password: REDACTED
+        name: sysop
+    release: os-conf
+  name: bosh
+  networks:
+  - name: bosh
+    static_ips:
+    - 10.4.1.4
+  persistent_disk_pool: bosh
+  properties:
+    agent:
+      env:
+        bosh:
+          blobstores:
+          - options:
+              endpoint: http://10.4.1.4:25250
+              password: REDACTED
+              tls:
+                cert:
+                  ca: REDACTED
+              user: blobstore-user
+            provider: dav
+      mbus: nats://natsuser:REDACTED@10.4.1.4:4222
+    aws:
+      access_key_id: REDACTED
+      default_key_name: vcap@training
+      default_security_groups:
+      - sg-097f0228a64f30cdb
+      region: us-east-2
+      secret_access_key: REDACTED
+    blobstore:
+      address: 10.4.1.4
+      agent:
+        password: REDACTED
+        user: blobstore-user
+      director:
+        password: REDACTED
+        user: director-user
+      port: 25250
+      provider: dav
+      tls:
+        cert:
+          ca: REDACTED
+          certificate: REDACTED
+          private_key: REDACTED
+    director:
+      address: 10.4.1.4
+      config_server:
+        ca_cert: REDACTED
+        enabled: true
+        uaa:
+          ca_cert: REDACTED
+          client_id: director_to_credhub
+          client_secret: REDACTED
+          url: https://10.4.1.4:8443
+        url: https://10.4.1.4:8844/api/
+      cpi_job: aws_cpi
+      db:
+        adapter: postgres
+        additional_databases:
+        - uaa
+        - credhub
+        database: bosh
+        host: 127.0.0.1
+        listen_address: 127.0.0.1
+        password: REDACTED
+        user: boshdb
+      enable_cpi_resize_disk: true
+      enable_dedicated_status_worker: true
+      enable_nats_delivered_templates: true
+      enable_post_deploy: true
+      events:
+        record_events: true
+      flush_arp: true
+      generate_vm_passwords: true
+      local_dns:
+        enabled: true
+      name: training-bosh
+      ssl:
+        cert: REDACTED
+        key: REDACTED
+      trusted_certs: ""
+      user_management:
+        provider: uaa
+        uaa:
+          public_key: REDACTED
+          url: https://10.4.1.4:8443
+      workers: 4
+    env:
+      http_proxy: ""
+      https_proxy: ""
+      no_proxy: ""
+    hm:
+      director_account:
+        ca_cert: REDACTED
+        client_id: hm
+        client_secret: REDACTED
+      resurrector_enabled: true
+    nats:
+      address: 10.4.1.4
+      password: REDACTED
+      tls:
+        ca: REDACTED
+        client_ca:
+          certificate: REDACTED
+          private_key: REDACTED
+        director:
+          certificate: REDACTED
+          private_key: REDACTED
+        health_monitor:
+          certificate: REDACTED
+          private_key: REDACTED
+        server:
+          certificate: REDACTED
+          private_key: REDACTED
+      user: natsuser
+    ntp:
+    - 0.pool.ntp.org
+    - 1.pool.ntp.org
+    postgres:
+      adapter: postgres
+      additional_databases:
+      - uaa
+      - credhub
+      database: bosh
+      host: 127.0.0.1
+      listen_address: 127.0.0.1
+      password: REDACTED
+      user: boshdb
+    registry:
+      address: 10.4.1.4
+      db:
+        adapter: postgres
+        additional_databases:
+        - uaa
+        - credhub
+        database: bosh
+        host: 127.0.0.1
+        listen_address: 127.0.0.1
+        password: REDACTED
+        user: boshdb
+      host: 10.4.1.4
+      password: REDACTED
+      port: 25777
+      username: registry-user
+  resource_pool: large
+  stemcell: default
+kit:
+  features:
+  - aws
+  - proto
+  name: bosh
+  version: 1.2.1
+meta:
+  default:
+    azs:
+    - us-east-2a
+  mbus_bootstrap_password: REDACTED
+  stemcell:
+    sha1: 41014fc439770a6f403dfaf6963a03400d47149d
+    url: https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-xenial-go_agent?v=97.12
+  stemcells:
+    aws:
+      sha1: 41014fc439770a6f403dfaf6963a03400d47149d
+      url: https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-xenial-go_agent?v=97.12
+    azure:
+      sha1: 07e7f1c4b6927bcab73770f13496ce1751bbc7fc
+      url: https://bosh.io/d/stemcells/bosh-azure-hyperv-ubuntu-xenial-go_agent?v=97.17
+    google:
+      sha1: 736d08538728c3b4ca6a2bb5353dd84241d03f75
+      url: https://bosh.io/d/stemcells/bosh-google-kvm-ubuntu-xenial-go_agent?v=97.12
+    openstack:
+      sha1: f52c4316b860c6cdae63f24cd25804f0c27023b4
+      url: https://bosh.io/d/stemcells/bosh-openstack-kvm-ubuntu-xenial-go_agent?v=97.12
+    vsphere:
+      sha1: d756a6632d88a08aa556a62c0c57993ba3a6a251
+      url: https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-xenial-go_agent?v=97.12
+  vault: secret/training/bosh
+name: training-bosh
+networks:
+- name: bosh
+  subnets:
+  - cloud_properties:
+      security_groups:
+      - sg-097f0228a64f30cdb
+      subnet: subnet-02e701da5a791735e
+    dns:
+    - 8.8.8.8
+    - 4.4.4.4
+    gateway: 10.4.1.1
+    range: 10.4.1.0/24
+    static:
+    - 10.4.1.4
+  type: manual
+params:
+  aws_default_sgs:
+  - sg-097f0228a64f30cdb
+  aws_disk_type: gp2
+  aws_instance_type: m4.large
+  aws_key_name: vcap@training
+  aws_region: us-east-2
+  aws_security_groups:
+  - sg-097f0228a64f30cdb
+  aws_subnet_id: subnet-02e701da5a791735e
+  bosh_disk_pool: bosh
+  bosh_hostname: bosh
+  bosh_network: bosh
+  bosh_vm_type: large
+  default_gateway: 10.4.1.1
+  dns:
+  - 8.8.8.8
+  - 4.4.4.4
+  env: training
+  ephemeral_disk_size: 25600
+  name: training-bosh
+  ntp:
+  - 0.pool.ntp.org
+  - 1.pool.ntp.org
+  persistent_disk_size: 32768
+  session_timeout: 1
+  static_ip: 10.4.1.4
+  subnet_addr: 10.4.1.0/24
+releases:
+- name: bosh
+  sha1: 3107ba41a109561cf181862ac59aa1e82ab0b286
+  url: https://s3.amazonaws.com/bosh-compiled-release-tarballs/bosh-268.2.0-ubuntu-xenial-97.28-20181024-210824-586102372-20181024210828.tgz
+  version: 268.2.0
+- name: bpm
+  sha1: f57c590660fb00a55e23fa9a955e79d39ef21d1a
+  url: https://s3.amazonaws.com/bosh-compiled-release-tarballs/bpm-0.12.3-ubuntu-xenial-97.17-20180919-183904-508666998-20180919183910.tgz?versionId=prHEVL4zedQ.NxMXbIOUGlwq6hidaqYq
+  version: 0.12.3
+- name: uaa
+  sha1: 97fcf9ce8b8bc9866771ce4c1ba59c9b19aa6f25
+  url: https://s3.amazonaws.com/bosh-compiled-release-tarballs/uaa-60.2-ubuntu-xenial-97.12-20180815-231707-188963409-20180815231720.tgz?versionId=AJarW.I0RXfMpEAgq.d.qCuG_oAht_80
+  version: "60.2"
+- name: credhub
+  sha1: afb03addb21543d3feafbebff8fdc242543ef0cb
+  url: https://s3.amazonaws.com/bosh-compiled-release-tarballs/credhub-2.0.2-ubuntu-xenial-97.16-20180912-174457-075145067-20180912174506.tgz?versionId=XXig9OLrmykqimvtJUYYlhKhykxk0M6i
+  version: 2.0.2
+- name: bosh-aws-cpi
+  sha1: b7999e95115bb691a630c07f0439ef5b577884c2
+  url: https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-aws-cpi-release?v=72
+  version: 72
+- name: os-conf
+  sha1: 42b1295896c1fbcd36b55bfdedfe86782b2c9fba
+  url: https://bosh.io/d/github.com/cloudfoundry/os-conf-release?v=20
+  version: 20
+resource_pools:
+- cloud_properties:
+    availability_zone: us-east-2a
+    ephemeral_disk:
+      size: 25600
+      type: gp2
+    instance_type: m4.large
+  env:
+    bosh:
+      mbus:
+        cert:
+          ca: REDACTED
+          certificate: REDACTED
+          private_key: REDACTED
+      password: REDACTED
+  name: large
+  network: bosh
+  stemcell:
+    sha1: 41014fc439770a6f403dfaf6963a03400d47149d
+    url: https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-xenial-go_agent?v=97.12
+stemcells:
+- alias: default
+  os: ubuntu-xenial
+  version: 97.latest
+update:
+  canaries: 1
+  canary_watch_time: 30000-600000
+  max_in_flight: 1
+  serial: true
+  update_watch_time: 30000-600000
+vm_types:
+- cloud_properties:
+    availability_zone: us-east-2a
+    ephemeral_disk:
+      size: 25600
+      type: gp2
+    instance_type: m4.large
+  name: large

@@ -1,0 +1,66 @@
+{
+    "director_id": "57f1b5b2-21c0-41ca-70b7-1fa14f4f65f4",
+    "installation_id": "ec503b30-578e-4cfb-6a54-11b1b0488d4c",
+    "current_vm_cid": "i-09d9d45d8a41a01af",
+    "current_stemcell_id": "57bcfe08-fd38-48de-78df-833fa3146bb1",
+    "current_disk_id": "bae6bdd9-cb91-4b7a-6d80-9dc0affac9cc",
+    "current_release_ids": [
+        "a882baaa-accd-4c4d-63c8-812b9e6f8840",
+        "b6c40990-5e4a-4bb8-713d-0ba2c71e1fe1",
+        "ed4cf791-588a-4602-7356-2f8ab5f344c5",
+        "57bbb9ec-4584-42fb-6137-bfcefc655c55",
+        "0faafa4a-7952-4cf6-4748-87b48e0dfee2",
+        "5ec57eb7-9c20-41be-52a6-a03118f79fea"
+    ],
+    "current_manifest_sha": "cdc1af9dca92b87ea57d18b0186ab8e3938ce3f9360c8921c0224a6639ec19d3a7cccbb956f65f7b7e82e0eb81caa5817890d6379806eed140b1e77def988d88",
+    "disks": [
+        {
+            "id": "bae6bdd9-cb91-4b7a-6d80-9dc0affac9cc",
+            "cid": "vol-0710975b9396c5061",
+            "size": 32768,
+            "cloud_properties": {
+                "type": "gp2"
+            }
+        }
+    ],
+    "stemcells": [
+        {
+            "id": "57bcfe08-fd38-48de-78df-833fa3146bb1",
+            "name": "bosh-aws-xen-hvm-ubuntu-xenial-go_agent",
+            "version": "97.12",
+            "cid": "ami-0ec63e7e0c7fccbac light"
+        }
+    ],
+    "releases": [
+        {
+            "id": "a882baaa-accd-4c4d-63c8-812b9e6f8840",
+            "name": "bosh",
+            "version": "268.2.0"
+        },
+        {
+            "id": "b6c40990-5e4a-4bb8-713d-0ba2c71e1fe1",
+            "name": "bpm",
+            "version": "0.12.3"
+        },
+        {
+            "id": "ed4cf791-588a-4602-7356-2f8ab5f344c5",
+            "name": "uaa",
+            "version": "60.2"
+        },
+        {
+            "id": "57bbb9ec-4584-42fb-6137-bfcefc655c55",
+            "name": "credhub",
+            "version": "2.0.2"
+        },
+        {
+            "id": "0faafa4a-7952-4cf6-4748-87b48e0dfee2",
+            "name": "bosh-aws-cpi",
+            "version": "72"
+        },
+        {
+            "id": "5ec57eb7-9c20-41be-52a6-a03118f79fea",
+            "name": "os-conf",
+            "version": "20"
+        }
+    ]
+}
