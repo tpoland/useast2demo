@@ -74,3 +74,8 @@ We are using gpg to encrypt the dg_class file to the file name dg_class.gpg
    1. decrypt dg_class.gpg if you have not done already by running bin/decrypt
       the argument is the passphrase 
    1. run bin/gen_teams from the top level directory
+
+2) team name the student's first name initial + lastname 
+    concourse username is 'admin'
+    concourse password can be found dg_class file
+
